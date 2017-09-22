@@ -12,12 +12,13 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(messa
                             level=logging.DEBUG)
 
 frame_processing_ratio = 4
+frame_count = 0
 cap = cv2.VideoCapture(0)
 #cap2 = cv2.VideoCapture(1)
 while(True):
     _, frame = cap.read()
     #_, frame2 = cap2.read()
-    if n%frame_processing_ratio:
+    if frame_count%frame_processing_ratio:
         frame = cv2.resize(frame, (0,0), fx=0.33, fy=0.33)
         if cv2.waitKey(1) & 0xFF == ord('c'):
             _, img_png = cv2.imencode('.png', frame)
@@ -53,7 +54,6 @@ while(True):
             cap.release()
             cv2.destroyAllWindows()
             break
-    n+=1
-    if n>4:
-        n = 0 # avoid inifinite number
-# When everything done, release the capture
+    frame_count+=1
+    if frame_count>4:
+        frame_count = 0 # avoid inifinite number

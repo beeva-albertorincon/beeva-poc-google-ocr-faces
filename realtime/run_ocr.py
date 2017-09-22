@@ -4,6 +4,10 @@ import cv2
 import base64
 import beesion
 
+import logging
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
 
 cap = cv2.VideoCapture(0)
 n = 0
@@ -22,7 +26,7 @@ while(True):
             with open('people.csv', 'a') as f:
                 f.write(text+'\n')
         except Exception as e:
-            print(e)
+            logging.error(e)
             frame = cv2.putText(frame, "Failed!", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 4)
             while(cv2.waitKey(1) & 0xFF != ord('q')):
                 cv2.imshow('frame',frame)

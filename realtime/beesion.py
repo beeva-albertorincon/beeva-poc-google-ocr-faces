@@ -15,6 +15,11 @@ from skimage.transform import resize
 import time
 import re
 
+import logging
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
+
 def detect_text_front(encoded_image):
     """Detects text in the captured video."""
     res = None
@@ -24,7 +29,7 @@ def detect_text_front(encoded_image):
     texts = response.text_annotations
     if texts:
         text = texts[0].description
-        print(parsed.split())
+        logging.info(text.split())
         if 'APELLIDOS' in text:
             surname1,surname2 = text.split("APELLIDOS")[1].split()[0:2]
         else:
@@ -33,8 +38,8 @@ def detect_text_front(encoded_image):
         name = text.split("NOMBRE")[1].split()[0]
         # birth = "-".join(text.split("FECHA DE NACIMIENTO")[1].split()[0:3])
         # dni = text.split("DNI")[1].split()[0:10]
-        print(name)
-        print(surname1 + ' ' + surname2)
+        logging.info(name)
+        logging.info('%s %s' %(surname1, surname2))
         res = name,surname1,surname2 #,birth, dni
     else:
         print("No text detected!")
@@ -42,22 +47,21 @@ def detect_text_front(encoded_image):
 
 def detect_text_real_time(encoded_image):
     """Detects text in the captured video."""
-    #STOP_WORDS = ['ESP', 'M', 'F', 'DOCUMENTO', 'NACIONAL', 'IDENTIDAD']
     client = vision.ImageAnnotatorClient()
     image = types.Image(content=encoded_image)
     response = client.text_detection(image=image)
     texts = response.text_annotations
+    name_info = None
     if texts:
-        # print(texts[0].description)
+        logging.info(texts[0].description)
         text = texts[0].description.replace('0','O', -1)
         words = text.split()
         regex = re.compile('[^a-zA-Z]')
         name_info = regex.sub(" ", words[-1]).split()
-        print(name_info)
-        return name_info
+        logging.info(name_info)
     else:
-        print("No text detected!")
-
+        logging.info("No text detected!")
+    return name_info
 
 def detect_text_in_file(path):
     """Detects text in the file."""
@@ -71,7 +75,6 @@ def detect_text_in_file(path):
     response = client.text_detection(image=image)
     texts = response.text_annotations
     print('Texts:')
-
     for text in texts:
         print('\n"{}"'.format(text.description))
 
@@ -102,12 +105,14 @@ def verify_face(image1,image2):
     """
     Check if detected faces belongs to the same person.
     """
+    res = None
     try:
         encoding1 = fk.face_encodings(image1)[0]
         encoding2 = fk.face_encodings(image2)[0]
-        return fk.compare_faces([encoding1], encoding2, tolerance=0.6)
+        res = fk.compare_faces([encoding1], encoding2, tolerance=0.6)
     except Exception as e:
-        print("Error: %s" %e)
+        logging.error("Error: %s" %e)
+    return res
 
 def detect_faces_offline(encoded_image):
     """
