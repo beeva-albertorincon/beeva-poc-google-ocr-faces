@@ -20,6 +20,24 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(messa
                             datefmt='%H:%M:%S',
                             level=logging.DEBUG)
 
+def save_face_to_encodings(face):
+    """
+    """
+    res = False
+    try:
+        encoding = fk.face_encodings(face)[0]
+        np.save('encodings/%i' %int(time.time()),encoding)
+        res = True
+    except Exception as e:
+        logging.error(e)
+    return res
+
+
+def load_known_faces(path_to_faces='encodings/'):
+    """ Face encodings for all known faces """
+    encodings = os.listdir(path_to_faces)
+    return [np.load(path_to_faces+e) for e in encodings if 'npy' in e]
+
 def detect_text_front(encoded_image):
     """Detects text in the captured video."""
     res = None
@@ -36,11 +54,15 @@ def detect_text_front(encoded_image):
             surname1 = text.split("PRIMER APELLIDO")[1].split()[0]
             surname2 = text.split("SEGUNDO APELLIDO")[1].split()[0]
         name = text.split("NOMBRE")[1].split()[0]
-        # birth = "-".join(text.split("FECHA DE NACIMIENTO")[1].split()[0:3])
-        # dni = text.split("DNI")[1].split()[0:10]
+        logging.info("getting expiration date")
+        validez = "-".join(text.split("SOPORT")[1].split()[1:4])
+        print(validez)
+        logging.info("getting dni")
+        dni = ''.join(text.split("DNI")[1].split()[0:9])
+        print(dni)
         logging.info(name)
         logging.info('%s %s' %(surname1, surname2))
-        res = name,surname1,surname2 #,birth, dni
+        res = name,surname1,surname2 ,validez, dni
     else:
         print("No text detected!")
     return res
@@ -110,6 +132,18 @@ def verify_face(image1,image2):
         encoding1 = fk.face_encodings(image1)[0]
         encoding2 = fk.face_encodings(image2)[0]
         res = fk.compare_faces([encoding1], encoding2, tolerance=0.6)
+    except Exception as e:
+        logging.error("Error: %s" %e)
+    return res
+
+def verify_known_faces(encodings,image2):
+    """
+    Check if detected faces belongs to the same person.
+    """
+    res = None
+    try:
+        encoding2 = fk.face_encodings(image2)[0]
+        res = fk.compare_faces(encodings, encoding2, tolerance=0.6)
     except Exception as e:
         logging.error("Error: %s" %e)
     return res

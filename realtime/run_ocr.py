@@ -19,6 +19,7 @@ while(True):
         _, img_png = cv2.imencode('.png', frame)
         try:
             text = beesion.detect_text_front(img_png.tobytes())
+            print(text)
             text = ','.join(text)
             frame = cv2.putText(frame, "%s" %(text), (10,200),cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0), 4)
             while(cv2.waitKey(1) & 0xFF != ord('q')):
