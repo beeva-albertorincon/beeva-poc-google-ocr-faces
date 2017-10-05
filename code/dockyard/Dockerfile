@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER alberto.rincon@beeva.com
 
-RUN apt-get update
+RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y build-essential \
                        gcc-4.9 \
@@ -26,6 +26,7 @@ RUN apt-get install -y build-essential \
                        python3-dev \
                        python3-pip\
                        wget \
+                       python3-tk \
                        libgtk2.0-dev
 
 RUN rm -rf /var/lib/apt/lists/*
@@ -37,7 +38,7 @@ RUN wget http://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.g
     && ./b2 \
     && ./b2 install
 
-RUN pip3 install face_recognition jupyter notebook google-api-python-client opencv-python matplotlib
+RUN pip3 install face_recognition jupyter notebook google-cloud opencv-python matplotlib scikit-image
 
 RUN mkdir -p -m 700 /root/.jupyter/ && echo "c.NotebookApp.ip = '*'" >> /root/.jupyter/jupyter_notebook_config.py
 
