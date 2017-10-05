@@ -55,8 +55,11 @@ def detect_text_front(encoded_image):
             surname2 = text.split("SEGUNDO APELLIDO")[1].split()[0]
         name = text.split("NOMBRE")[1].split()[0]
         logging.info("getting expiration date")
-        validez = "-".join(text.split("SOPORT")[1].split()[1:4])
-        print(validez)
+        if 'SOPORT' in text:
+            validez = "-".join(text.split("SOPORT")[1].split()[1:4])
+            print(validez)
+        else:
+            validez = "-".join(text.split("IDESP")[1].split()[1:4])
         logging.info("getting dni")
         dni = ''.join(text.split("DNI")[1].split()[0:9])
         print(dni)

@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(messa
 
 frame_processing_ratio = 4
 frame_count = 0
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 #cap2 = cv2.VideoCapture(1)
 while(True):
     _, frame = cap.read()
@@ -37,11 +37,11 @@ while(True):
             verification_result = beesion.verify_known_faces(known_faces, croped_faces[0])
             logging.info(verification_result)
             if verification_result and True in verification_result:
-                frame = cv2.putText(frame, 'Acceso permitido', (20,200),cv2.FONT_HERSHEY_SIMPLEX, 4, (0,255,0), 4)
+                frame = cv2.putText(frame, 'Acceso permitido', (20,200),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 4)
                 while(cv2.waitKey(1) & 0xFF != ord('q')):
                     cv2.imshow('frame',frame)
             elif verification_result and False in verification_result:
-                frame = cv2.putText(frame, "Acceso denegado", (20,200),cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 2)
+                frame = cv2.putText(frame, "Acceso denegado", (20,200),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
             else:
                 frame = cv2.putText(frame, "Por favor, no se mueva", (20,200),cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0), 2)
         cv2.imshow('frame',frame)
