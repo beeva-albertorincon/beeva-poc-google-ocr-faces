@@ -47,4 +47,4 @@ RUN git clone https://github.com/beeva-albertorincon/beeva-poc-google-ocr-faces.
 
 EXPOSE 8888
 
-ENTRYPOINT['/bin/bash']
+ENTRYPOINT '/bin/bash' 
