@@ -22,11 +22,12 @@ RUN apt-get install -y build-essential \
                        libbz2-dev \
                        libicu-dev \
                        libboost-all-dev \
-                       python3 \
-                       python3-dev \
-                       python3-pip\
+                       python \
+                       python-dev \
+                       python-pip\
                        wget \
-                       python3-tk \
+                       python-tk \
+                       python-opencv
                        libgtk2.0-dev
 
 RUN rm -rf /var/lib/apt/lists/*
@@ -38,7 +39,7 @@ RUN wget http://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.g
     && ./b2 \
     && ./b2 install
 
-RUN pip3 install face_recognition jupyter notebook google-cloud opencv-python matplotlib scikit-image
+RUN pip install face_recognition jupyter notebook google-cloud matplotlib scikit-image
 
 RUN mkdir -p -m 700 /root/.jupyter/ && echo "c.NotebookApp.ip = '*'" >> /root/.jupyter/jupyter_notebook_config.py
 
