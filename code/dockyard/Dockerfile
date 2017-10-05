@@ -27,7 +27,7 @@ RUN apt-get install -y build-essential \
                        python-pip\
                        wget \
                        python-tk \
-                       python-opencv
+                       python-opencv \
                        libgtk2.0-dev
 
 RUN rm -rf /var/lib/apt/lists/*
